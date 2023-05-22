@@ -34,11 +34,12 @@ This command will install all the dependencies listed in requirements.txt.
 
 Running the Project
 After installing the dependencies, you can run the project by executing:
-
+```
 python er.py
+```
 
 Copy this code block to compare utility:
-```
+```python
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Specify internal regret settings')
     parser.add_argument('--num_moves', type=int, default=4, help="Number of moves in the game, default 3")
@@ -57,6 +58,5 @@ if __name__ == "__main__":
     parser.add_argument("--experiment_name", type=str, help="What is this experiment called?", default="CYBERTRASH")
     parser.add_argument("--game_reps", type=int, help="How many games to repeat for", default=1)
     args = parser.parse_args()
-    print(args)
     main(args.num_players, args.num_moves, args.zero_sum, args.seed, args.iterations, args.pure, args.experiment_name, args.game_reps)
 ```
