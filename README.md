@@ -60,3 +60,18 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main(args.num_players, args.num_moves, args.zero_sum, args.seed, args.iterations, args.pure, args.experiment_name, args.game_reps)
 ```
+
+You can modify the number of moves in:
+```python
+parser.add_argument('--num_moves', type=int, default=4, help="Number of moves in the game, default 3")
+```
+
+You can modify the number of players in:
+```python
+parser.add_argument('--num_players', type=int, default=4, help="Number of players in the game, default 2")
+```
+
+You can modify the number of iterations in:
+```python
+parser.add_argument('--iterations', type=int, default=10000, help="Number of iterations to run regret minimization, default 1K")
+```
