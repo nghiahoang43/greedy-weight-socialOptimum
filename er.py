@@ -192,6 +192,9 @@ def find_greedy(equilibrium, game):
 
     return weights, np.array(regret_over_time)
 
+def smooth_data(data, window_size):
+    return np.convolve(data, np.ones(window_size)/window_size, mode='valid')
+
 # Finalize and save the plot with the relevant experimental parameters
 def finalize_plot(experiment_name, iterations, zero_sum, use_pure_strategies, game, seed, ax, game_reps):
     minlength = 1e10
@@ -207,6 +210,7 @@ def finalize_plot(experiment_name, iterations, zero_sum, use_pure_strategies, ga
             linewidth = 3
         else:
             linewidth = 1
+
         if args.use_time:
             for i in range(len(regrets_to_plot[name])):
                 regrets_to_plot[name][i] = regrets_to_plot[name][i][:minlength]
@@ -219,9 +223,7 @@ def finalize_plot(experiment_name, iterations, zero_sum, use_pure_strategies, ga
             avg = np.mean(np.array(regrets_to_plot[name]), axis=0)
             avg[avg < EPSILON] = EPSILON
             std = 1.96 * np.std(np.array(regrets_to_plot[name]), axis=0) / np.sqrt(game_reps)
-
             ax.errorbar(np.arange(1, len(avg)+1), avg, label=name, linewidth=linewidth, yerr=std)
-
     fpath = "figs/{}_{}".format(experiment_name, args.use_time)
     if not os.path.exists(fpath):
         os.mkdir(fpath)
@@ -896,16 +898,16 @@ def compare_mixed(game):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Specify internal regret settings')
-    parser.add_argument('--num_moves', type=int, default=4, help="Number of moves in the game, default 3")
-    parser.add_argument('--num_players', type=int, default=4, help="Number of players in the game, default 2")
-    parser.add_argument('--iterations', type=int, default=10000, help="Number of iterations to run regret minimization, default 1K")
+    parser.add_argument('--num_moves', type=int, default=10, help="Number of moves in the game, default 3")
+    parser.add_argument('--num_players', type=int, default=7, help="Number of players in the game, default 2")
+    parser.add_argument('--iterations', type=int, default=1000, help="Number of iterations to run regret minimization, default 1K")
     parser.add_argument('--seed', type=int, default=42, help="Random seed, default 42")
     parser.add_argument('--zero_sum', action="store_true", default=False, help="Make the game zero sum, default false")
     parser.add_argument('--solo_compare', action="store_true", default=False, help="Compare only RM and dynamic weights")
     parser.add_argument('--sweep_floor', action="store_true", default=False, help="Sweep floors")
     parser.add_argument('--compare_dynamic', action="store_true", default=False, help="Compare the variants of dynamic weights")
-    parser.add_argument('--full_sweep', action="store_true", default=False, help="Sweep through all non dynamic methods")
-    parser.add_argument('--full_utility', action="store_true", default=True, help="Sweep through all non dynamic methods")
+    parser.add_argument('--full_sweep', action="store_true", default=True, help="Sweep through all non dynamic methods")
+    parser.add_argument('--full_utility', action="store_true", default=False, help="Sweep through all non dynamic methods")
     parser.add_argument('--compare_mixed', action="store_true", default=False, help="Compare mixed dynamic")
     parser.add_argument('--use_time', action="store_true", default=False, help="Compare time")
     parser.add_argument('--pure', action="store_true", default=True, help="Use pure strategies for regret minimization, default false")
